@@ -5,8 +5,8 @@ import json
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default=None, help="Path to a JSON config file. CLI arguments override config values.")
-    parser.add_argument("--checkpoint_path", type=str, required=True)
-    parser.add_argument("--test_data_path", type=str, required=True)
+    parser.add_argument("--checkpoint_path", type=str, default=None)
+    parser.add_argument("--test_data_path", type=str, default=None)
     parser.add_argument("--task", type=str, default=None, help="Task/dataset name (e.g. 'multinli'). Auto-detected from --test_data_path if not set.")
     parser.add_argument("--use_hf_dataset", action="store_true", help="use huggingface dataset")
     parser.add_argument("--batch_size", type=int, default=8)
@@ -52,7 +52,8 @@ def get_args():
     parser.add_argument("--best_loss_window", type=int, default=50, help="Number of optimizer steps per window for best-loss tracking (default: 50).")
     parser.add_argument("--ema_decay", type=float, default=0.0, help="EMA decay rate for model weights (0 = disabled). Recommended: 0.995-0.999.")
     parser.add_argument("--val_data_path", type=str, default=None, help="Path to a fixed val CSV (sentence, label, optionally has_shortcut). When provided, bypasses --val_n sampling and --few_shot_cal_n sampling for both checkpoint selection and alpha calibration.")
-    parser.add_argument("--val_n", type=int, default=0, help="Sample N labeled test examples and evaluate every --val_eval_steps optimizer steps. Logs val metrics during training. 0 = disabled. Ignored when --val_data_path is set.")
+    parser.add_argument("--val_n", type=int, default=0, help="Sample N labeled test examples and evaluate every --val_eval_steps optimizer steps. Logs val metrics during training. 0 = disabled. Ignored when --val_data_path is set. \
+                           Note: if --val_data_path is not provided, use this to randomly sample a small subset of the test set for choosing alpha.")
     parser.add_argument("--val_eval_steps", type=int, default=50, help="Evaluate on validation set every N optimizer steps (default: 50).")
     parser.add_argument("--val_select_best", action="store_true", help="Restore the checkpoint with best validation acc (requires --val_n > 0 or --val_data_path). Without this flag, val metrics are logged but final weights are used.")
     parser.add_argument("--val_last_gap", type=float, default=0.05, help="With --val_select_best: if the final step's val_acc is within this gap of the best, use the final weights instead (more training = better representations). Default 0.05.")
@@ -64,7 +65,7 @@ def get_args():
     # evaluation
     parser.add_argument("--compute_wga", action="store_true", help="Compute 4-group accuracies over (label, has_shortcut) and report WGA.")
     parser.add_argument("--shortcut_col", type=str, default="has_shortcut", help="Column name in the CSV file to use for has_shortcut.")
-    parser.add_argument("--lora_weight_scales", type=str, default=None, help="Comma-separated alpha values for LoRA weight interpolation sweep (e.g. '0.1,0.3,0.5,0.7,0.9,1.0'). Evaluates at each scale after training.")
+    parser.add_argument("--lora_weight_scales", type=str, default="0,0.2,0.4,0.6,0.8,1.0", help="Comma-separated alpha values for LoRA weight interpolation sweep. Evaluates at each scale after training.")
     parser.add_argument("--kd_ref", type=str, default=None, help="Comma-separated kd_ref values for auto-alpha (e.g. '0.3,0.4,0.5'). alpha = min(1, final_kd / kd_ref). Scales LoRA weights and evaluates at each.")
     parser.add_argument("--train_data_path", type=str, default=None, help="Path to training data CSV (for MSTPS baseline). Subsample used to compute baseline MSTPS for adaptive alpha.")
     parser.add_argument("--few_shot_cal_n", type=int, default=0, help="Few-shot alpha calibration: randomly sample N labeled examples from test data to sweep alpha and pick the best. 0 = disabled.")
@@ -90,6 +91,10 @@ def get_args():
         parser.set_defaults(**config)
 
     args = parser.parse_args()
+    if args.checkpoint_path is None:
+        parser.error("--checkpoint_path is required (provide on CLI or via --config)")
+    if args.test_data_path is None:
+        parser.error("--test_data_path is required (provide on CLI or via --config)")
     if args.ema_decay > 0 and args.select_best_loss:
         parser.error("--ema_decay and --select_best_loss are mutually exclusive")
     _has_val = args.val_data_path is not None or args.val_n > 0

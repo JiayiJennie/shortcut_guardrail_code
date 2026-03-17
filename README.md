@@ -57,12 +57,14 @@ Run Shortcut Guardrail on a biased checkpoint:
 ```bash
 CUDA_VISIBLE_DEVICES=0 python run_shortcut_guardrail.py \
   --config configs/sst2.json \
-  --checkpoint_path <path/to/checkpoint>
+  --checkpoint_path results/sst2_bert/checkpoint-7580 % your/path/of/checkpoint/from/training
 ```
 
 Available: `sst2.json`, `civil.json`, `multinli.json`. CLI arguments override config values.
 
 The script outputs:
+
 - **Teacher / Student accuracy** on the test set
 - **WGA** (Worst-Group Accuracy) when `--compute_wga` is set
 - **MSTPS** (Max Single-Token Prediction Sensitivity) measuring shortcut dependence
+

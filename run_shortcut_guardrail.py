@@ -78,9 +78,6 @@ def main(args):
             return sents, labs, has_shortcut
         return sents, labs
 
-    # ================================================================
-    # dump_test_path: load + subsample test data and exit early
-    # ================================================================
     if args.dump_test_path:
         import pandas as pd
         test_has_shortcut = None
@@ -98,9 +95,6 @@ def main(args):
         print(f"[dump_test] saved {len(dump_df)} examples -> {dump_path}")
         return
 
-    # ================================================================
-    # Load teacher (frozen) and student (LoRA)
-    # ================================================================
     teacher, tokenizer = load_model(args.checkpoint_path)
     teacher.to(args.device)
     teacher.eval()
@@ -109,9 +103,6 @@ def main(args):
     targets = [t.strip() for t in args.lora_target_modules.split(",") if t.strip()]
     student = build_lora_student(args, targets)
 
-    # ================================================================
-    # Pipeline paths
-    # ================================================================
     tmp_root = None
     if not args.output_adapter_dir:
         tmp_root = tempfile.mkdtemp(prefix="peer_learning_v6_")
@@ -136,7 +127,6 @@ def main(args):
         test_sentences, test_labels = _load_eval_data()
     print(f"n_eval_examples={len(test_sentences)}")
 
-    # Sample validation subset for checkpoint selection
     val_sents, val_labels, val_has_shortcut_sub = None, None, None
     if args.val_data_path is not None:
         if args.compute_wga:
