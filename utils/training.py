@@ -5,12 +5,8 @@ import random
 
 import torch
 
-from .guardrail_utils import (
-    freeze_all_params, pooler_output, info_nce_masked,
-    wga_groups,
-)
-from .model_utils_bert import get_batch_predictions
-from .model_utils import load_model, get_accuracy
+from .model import freeze_all_params, pooler_output, load_model, get_batch_predictions
+from .metrics import info_nce_masked, wga_groups, get_accuracy
 
 
 def build_lora_student(args, targets):

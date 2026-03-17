@@ -1,0 +1,7 @@
+{
+    "model_name": "bert-base-uncased",
+    "train_file": "data/sst-2/train.csv",
+    "num_epochs": 4,
+    "num_labels": 2,
+    "output_dir": "results/sst2_bert"
+}

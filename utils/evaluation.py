@@ -4,12 +4,8 @@ import random
 import torch
 import torch.nn.functional as F
 
-from .guardrail_utils import (
-    pooler_output, compute_mstps, wga_groups,
-    load_csv_with_has_shortcut,
-)
-from .model_utils_bert import get_batch_predictions
-from .model_utils import load_model, load_test_data, get_accuracy
+from .model import pooler_output, load_model, load_test_data, load_csv_with_has_shortcut, get_batch_predictions
+from .metrics import compute_mstps, wga_groups, get_accuracy
 
 
 def compute_contrastive_quality(student, tokenizer, train_pairs, test_sentences, args):

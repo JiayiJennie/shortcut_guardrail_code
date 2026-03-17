@@ -1,0 +1,7 @@
+{
+    "model_name": "bert-base-uncased",
+    "train_file": "data/civil/train.csv",
+    "num_epochs": 4,
+    "num_labels": 2,
+    "output_dir": "results/civil_bert"
+}

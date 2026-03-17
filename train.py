@@ -4,6 +4,7 @@ Acknowledgement: This code is adapted from the NFL code: https://github.com/face
 
 
 from argparse import ArgumentParser
+import json
 import os
 import matplotlib.pyplot as plt
 import torch
@@ -36,14 +37,19 @@ class CleanEvalTrainer(Trainer):
         return (loss, outputs) if return_outputs else loss
 
 parser = ArgumentParser()
-parser.add_argument("--train_file", type=str, default="/mnt/disk21/user/jiayili/doNt-Forget-your-Language/data/biased_amazon_train.csv")
+parser.add_argument("--config", type=str, default=None, help="Path to a JSON config file. CLI arguments override config values.")
+parser.add_argument("--train_file", type=str, required=True)
 parser.add_argument("--test_file", type=str, default=None, help="Optional explicit test CSV. If unset, uses train_file with 'train' replaced by 'test'.")
-parser.add_argument("--output_dir", type=str, default="./results/biased_amazon_output")
-parser.add_argument("--model_name", type=str, default="roberta-base")
+parser.add_argument("--output_dir", type=str, required=True)
+parser.add_argument("--model_name", type=str, default="bert-base-uncased")
 parser.add_argument("--seed", type=int, default=42)
 parser.add_argument("--num_epochs", type=int, default=6)
 parser.add_argument("--num_labels", type=int, default=2)
 parser.add_argument("--freeze_lm", type=str, default="None")
+pre_args, _ = parser.parse_known_args()
+if pre_args.config is not None:
+    with open(pre_args.config, "r") as f:
+        parser.set_defaults(**json.load(f))
 args = parser.parse_args()
 
 os.environ["WANDB_DISABLED"] = "true"  # disable wandb

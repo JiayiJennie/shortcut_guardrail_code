@@ -1,8 +1,10 @@
 import argparse
+import json
 
 
 def get_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--config", type=str, default=None, help="Path to a JSON config file. CLI arguments override config values.")
     parser.add_argument("--checkpoint_path", type=str, required=True)
     parser.add_argument("--test_data_path", type=str, required=True)
     parser.add_argument("--task", type=str, default=None, help="Task/dataset name (e.g. 'multinli'). Auto-detected from --test_data_path if not set.")
@@ -79,6 +81,13 @@ def get_args():
     parser.add_argument("--min_prevalence", type=float, default=0.01)
     parser.add_argument("--disable_excluded_tokens", action="store_true", help="Do NOT filter out tokens in utils.stop_tokens.EXCLUDED_TOKENS during Stage 1.")
     parser.add_argument("--whitelist_tokens", type=str, default=None, help="Comma-separated tokens to exempt from EXCLUDED_TOKENS filter, e.g. 'no,nobody,never,nothing,none,neither'.")
+
+    # Two-pass parsing: first grab --config, then apply JSON defaults before full parse
+    pre_args, _ = parser.parse_known_args()
+    if pre_args.config is not None:
+        with open(pre_args.config, "r") as f:
+            config = json.load(f)
+        parser.set_defaults(**config)
 
     args = parser.parse_args()
     if args.ema_decay > 0 and args.select_best_loss:

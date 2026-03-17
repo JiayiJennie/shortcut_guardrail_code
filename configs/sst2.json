@@ -1,0 +1,12 @@
+{
+    "test_data_path": "data/sst-2/test.csv",
+    "val_data_path": "data/sst-2/spt.csv",
+    "top_k_token": 5,
+    "num_train_epochs": 1,
+    "learning_rate": 1e-4,
+    "temperature": 0.1,
+    "lambda_kd": 0,
+    "lora_r": 4,
+    "fp16": true,
+    "lora_weight_scales": "0,0.2,0.4,0.6,0.8,1.0"
+}

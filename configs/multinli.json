@@ -1,0 +1,14 @@
+{
+    "test_data_path": "data/multinli/test.csv",
+    "val_data_path": "data/multinli/spt.csv",
+    "top_k_token": 10,
+    "num_train_epochs": 1,
+    "learning_rate": 1e-4,
+    "temperature": 0.1,
+    "lambda_kd": 0,
+    "lora_r": 4,
+    "fp16": true,
+    "compute_wga": true,
+    "lora_weight_scales": "0,0.2,0.4,0.6,0.8,1.0",
+    "shortcut_col": "sentence2_has_negation"
+}

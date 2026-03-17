@@ -1,26 +1,23 @@
-from numpy.ma import masked
-from utils.model_utils import TokenScore
+import copy
+import random
+import re
+from collections import Counter, defaultdict
+from typing import List, Tuple, Dict
+
+import numpy as np
 import torch
+import torch.nn.functional as F
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from tqdm import tqdm
-from utils.stop_tokens import EXCLUDED_TOKENS
-import re
 from captum.attr import IntegratedGradients, Saliency
-import torch.nn.functional as F
-from collections import defaultdict
-# from sklearn.neighbors import NearestNeighbors
-from typing import List, Tuple, Dict
-import numpy as np
-from collections import Counter
-# from transformers import pipeline
 import nltk
 from nltk.corpus import wordnet as wn
 import spacy
 from lemminflect import getInflection
 import requests
-from sentence_transformers import SentenceTransformer
-import copy
-import random
+
+from .model import TokenScore, get_batch_predictions
+from .stop_tokens import EXCLUDED_TOKENS
 
 random.seed(42)
 
@@ -38,42 +35,6 @@ def get_lemma_spacy(word: str):
     doc = nlp(word)
     return doc[0].lemma_
 
-def get_batch_predictions(sentences: List[str], model: AutoModelForSequenceClassification, tokenizer: AutoTokenizer, 
-                        device: str, batch_size: int, _tqdm: bool = True) -> List[Tuple[int, float]]:
-        """
-        Get predictions for multiple sentences in batch with GPU acceleration.
-        
-        Args:
-            sentences: List of input sentences
-            
-        Returns:
-            List of (predicted_label, confidence_score) tuples
-        """
-
-        # in batch
-        if not sentences:
-            return []
-        
-        predictions = []
-
-        model.eval()
-        iterator = range(0, len(sentences), batch_size)
-        if _tqdm:
-            iterator = tqdm(iterator, desc="Getting predictions", total=len(sentences) // batch_size + 1)
-
-        with torch.no_grad():
-            for i in iterator:
-                batch_sentences = sentences[i:i + batch_size]
-                inputs = tokenizer(batch_sentences, return_tensors="pt", padding=True, truncation=True, max_length=512)
-                inputs = {k: v.to(device) for k, v in inputs.items()}
-                outputs = model(**inputs)
-                probabilities = torch.softmax(outputs.logits, dim=1)
-                predicted_labels = torch.argmax(probabilities, dim=1).cpu().tolist()
-                confidences = torch.max(probabilities, dim=1).values.cpu().tolist()
-                predictions.extend(list(zip(predicted_labels, confidences)))
-        return predictions
-
-        
 class ShortcutTokenFinder:
     def __init__(self, tokenizer: AutoTokenizer, model: AutoModelForSequenceClassification, 
     batch_size: int = 8, _tqdm: bool = True, use_ig: bool = False, use_saliency: bool = False, ig_n_steps: int = 5,

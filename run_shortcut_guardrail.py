@@ -13,13 +13,12 @@ curdir = os.path.abspath(os.path.dirname(__file__))
 sys.path.append(curdir)
 
 from config import get_args
-from utils.guardrail_utils import (
-    freeze_all_params, pooler_output,
-    info_nce_masked, compute_mstps,
-    wga_groups, load_csv_with_has_shortcut,
+from utils.model import (
+    load_model, load_test_data, load_csv_with_has_shortcut,
+    get_batch_predictions, freeze_all_params, pooler_output,
 )
-from utils.model_utils_bert import ShortcutTokenFinder, get_batch_predictions
-from utils.model_utils import load_model, load_test_data, get_accuracy
+from utils.metrics import info_nce_masked, compute_mstps, wga_groups, get_accuracy
+from utils.shortcut_finder import ShortcutTokenFinder
 from utils.training import build_lora_student, run_grid_search
 from utils.evaluation import (
     compute_contrastive_quality,

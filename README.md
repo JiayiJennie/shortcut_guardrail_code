@@ -4,7 +4,29 @@ Code for the paper *"Models Know Their Shortcuts: Deployment-Time Shortcut Mitig
 
 ## Overview
 
-**Shortcut Guardrail** is a deployment-time framework that mitigates token-level shortcuts without access to training data and abels, or shortcut group annotations. Our method leverages gradient-based attribution and a lightweight debiasing module with a Masked Contrastive Learning (MaskCL) objective to reduce reliance on these tokens.
+**Shortcut Guardrail** is a deployment-time framework that mitigates token-level shortcuts without access to training data and labels, or shortcut group annotations. Our method leverages gradient-based attribution and a lightweight debiasing module with a Masked Contrastive Learning (MaskCL) objective to reduce reliance on these tokens.
+
+## Repository Structure
+
+```
+├── run_shortcut_guardrail.py   # Main entry point
+├── train.py                    # Train biased models
+├── config.py                   # Argument parsing
+├── configs/                    # Per-dataset JSON configs
+│   ├── sst2.json / civil.json / multinli.json
+│   └── train_sst2.json / train_civil.json / train_multinli.json
+├── data/                       # Processed datasets
+│   ├── sst-2/ 
+│   ├── civil/
+│   └── multinli/
+└── utils/
+    ├── shortcut_finder.py      # ShortcutTokenFinder (Stage 1)
+    ├── model.py                # Model loading & inference
+    ├── metrics.py              # Loss & evaluation metrics
+    ├── training.py             # Stage 2 training loop
+    ├── evaluation.py           # Stage 3 evaluation & sweeps
+    └── stop_tokens.py          # Excluded token list
+```
 
 ## Environment Setup
 
@@ -16,56 +38,32 @@ pip install -r requirements.txt
 
 ## Data
 
-Processed datasets are provided in `data/`. See the folder structure for details.
+Processed datasets are provided in `data/`. Each dataset folder contains `train.csv`, `test.csv`, and `spt.csv` (support set for calibration).
 
-### Training Biased Models
+## Training Task-Specific Models
 
-Before running Shortcut Guardrail, train a biased BERT model on the shortcut-injected training data:
+Train a task-specific BERT model before running Shortcut Guardrail. Per-dataset configs are provided:
 
 ```bash
-python train.py \
-  --model_name bert-base-uncased \
-  --train_file path/to/train/data \
-  --num_epochs <num_epochs> \
-  --num_labels <num_labels> \
-  --output_dir your/output_dir
+python train.py --config configs/train_sst2.json
 ```
+
+Available: `train_sst2.json`, `train_civil.json`, `train_multinli.json`. CLI arguments override config values.
 
 ## Quick Start
 
-Run Shortcut Guardrail on a biased checkpoint with a single command:
+Run Shortcut Guardrail on a biased checkpoint:
 
 ```bash
 python run_shortcut_guardrail.py \
+  --config configs/sst2.json \
   --checkpoint_path <path/to/biased_checkpoint> \
-  --test_data_path data/sst2/val.csv \
-  --top_k_token 5 \
-  --num_train_epochs 1 \
-  --learning_rate 1e-4 \
-  --lambda_kd 0 \
-  --lora_r 4 \
-  --fp16 \
   --device cuda:0
 ```
 
-With adaptive debiasing strength calibration (16 labeled examples):
+Available: `sst2.json`, `civil.json`, `multinli.json`. CLI arguments override config values.
 
-```bash
-python run_shortcut_guardrail.py \
-  --checkpoint_path <path/to/biased_checkpoint> \
-  --test_data_path data/sst2/val.csv \
-  --val_data_path data/sst2/dev.csv \
-  --top_k_token 5 \
-  --num_train_epochs 1 \
-  --learning_rate 1e-4 \
-  --lambda_kd 0 \
-  --lora_r 4 \
-  --lora_weight_scales "0,0.2,0.4,0.6,0.8,1.0" \
-  --fp16 \
-  --device cuda:0
-```
-
-The script will output:
+The script outputs:
 - **Teacher / Student accuracy** on the test set
 - **WGA** (Worst-Group Accuracy) when `--compute_wga` is set
 - **MSTPS** (Max Single-Token Prediction Sensitivity) measuring shortcut dependence

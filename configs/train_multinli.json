@@ -1,0 +1,7 @@
+{
+    "model_name": "bert-base-uncased",
+    "train_file": "data/multinli/train.csv",
+    "num_epochs": 5,
+    "num_labels": 3,
+    "output_dir": "results/multinli_bert"
+}
