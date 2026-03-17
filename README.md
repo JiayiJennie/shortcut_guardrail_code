@@ -25,10 +25,10 @@ Before running Shortcut Guardrail, train a biased BERT model on the shortcut-inj
 ```bash
 python train.py \
   --model_name bert-base-uncased \
-  --train_file data/sst2/train.csv \
-  --num_epochs 4 \
-  --num_labels 2 \
-  --output_dir results/sst2_bert
+  --train_file path/to/train/data \
+  --num_epochs <num_epochs> \
+  --num_labels <num_labels> \
+  --output_dir your/output_dir
 ```
 
 ## Quick Start
