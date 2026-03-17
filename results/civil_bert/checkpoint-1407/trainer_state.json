@@ -1,0 +1,57 @@
+{
+  "best_global_step": 1407,
+  "best_metric": 0.865,
+  "best_model_checkpoint": "./results/civil-wilds1_shortcut_output_bert_bl_v80/checkpoint-1407",
+  "epoch": 1.0,
+  "eval_steps": 500,
+  "global_step": 1407,
+  "is_hyper_param_search": false,
+  "is_local_process_zero": true,
+  "is_world_process_zero": true,
+  "log_history": [
+    {
+      "epoch": 0.35555555555555557,
+      "grad_norm": 2.188500165939331,
+      "learning_rate": 4.556680881307747e-05,
+      "loss": 0.3984,
+      "step": 500
+    },
+    {
+      "epoch": 0.7111111111111111,
+      "grad_norm": 4.6546502113342285,
+      "learning_rate": 4.112473347547975e-05,
+      "loss": 0.349,
+      "step": 1000
+    },
+    {
+      "epoch": 1.0,
+      "eval_accuracy": 0.865,
+      "eval_loss": 0.31724730134010315,
+      "eval_runtime": 30.6218,
+      "eval_samples_per_second": 163.282,
+      "eval_steps_per_second": 20.41,
+      "step": 1407
+    }
+  ],
+  "logging_steps": 500,
+  "max_steps": 5628,
+  "num_input_tokens_seen": 0,
+  "num_train_epochs": 4,
+  "save_steps": 500,
+  "stateful_callbacks": {
+    "TrainerControl": {
+      "args": {
+        "should_epoch_stop": false,
+        "should_evaluate": false,
+        "should_log": false,
+        "should_save": true,
+        "should_training_stop": false
+      },
+      "attributes": {}
+    }
+  },
+  "total_flos": 4184473002232800.0,
+  "train_batch_size": 8,
+  "trial_name": null,
+  "trial_params": null
+}
