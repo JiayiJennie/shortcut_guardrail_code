@@ -45,7 +45,7 @@ Processed datasets are provided in `data/`. Each dataset folder contains `train.
 Train a task-specific BERT model before running Shortcut Guardrail. Per-dataset configs are provided:
 
 ```bash
-python train.py --config configs/train_sst2.json
+CUDA_VISIBLE_DEVICES=0 python train.py --config configs/train_sst2.json
 ```
 
 Available: `train_sst2.json`, `train_civil.json`, `train_multinli.json`. CLI arguments override config values.
@@ -55,10 +55,9 @@ Available: `train_sst2.json`, `train_civil.json`, `train_multinli.json`. CLI arg
 Run Shortcut Guardrail on a biased checkpoint:
 
 ```bash
-python run_shortcut_guardrail.py \
+CUDA_VISIBLE_DEVICES=0 python run_shortcut_guardrail.py \
   --config configs/sst2.json \
-  --checkpoint_path <path/to/biased_checkpoint> \
-  --device cuda:0
+  --checkpoint_path <path/to/checkpoint>
 ```
 
 Available: `sst2.json`, `civil.json`, `multinli.json`. CLI arguments override config values.
