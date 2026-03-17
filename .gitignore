@@ -1,0 +1,41 @@
+# Training outputs
+results/
+checkpoints/
+output/
+
+# Logs
+log/
+logs/
+*.log
+nohup.out
+
+# Temporary / runtime files
+*.jsonl
+*.pt
+*.bin
+*.safetensors
+adapter/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+
+# Environment
+.env
+*.env
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
