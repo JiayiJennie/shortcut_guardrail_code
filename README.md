@@ -40,19 +40,9 @@ pip install -r requirements.txt
 
 Processed datasets are provided in `data/`. Each dataset folder contains `train.csv`, `test.csv`, and `spt.csv` (support set for calibration).
 
-## Training Task-Specific Models
-
-Train a task-specific BERT model before running Shortcut Guardrail. Per-dataset configs are provided:
-
-```bash
-CUDA_VISIBLE_DEVICES=0 python train.py --config configs/train_sst2.json
-```
-
-Available: `train_sst2.json`, `train_civil.json`, `train_multinli.json`. CLI arguments override config values.
-
 ## Quick Start
 
-Run Shortcut Guardrail on a biased checkpoint:
+We provide pre-trained biased checkpoints. Run Shortcut Guardrail on a checkpoint with trained task-specific head:
 
 ```bash
 CUDA_VISIBLE_DEVICES=0 python run_shortcut_guardrail.py \
@@ -67,4 +57,14 @@ The script outputs:
 - **Teacher / Student accuracy** on the test set
 - **WGA** (Worst-Group Accuracy) when `--compute_wga` is set
 - **MSTPS** (Max Single-Token Prediction Sensitivity) measuring shortcut dependence
+
+## Training Task-Specific Models
+
+If you prefer to train your own biased model, per-dataset configs are provided:
+
+```bash
+CUDA_VISIBLE_DEVICES=0 python train.py --config configs/train_sst2.json
+```
+
+Available: `train_sst2.json`, `train_civil.json`, `train_multinli.json`. CLI arguments override config values.
 
