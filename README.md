@@ -63,7 +63,7 @@ The script outputs:
 If you prefer to train your own biased model, per-dataset configs are provided:
 
 ```bash
-CUDA_VISIBLE_DEVICES=0 python train.py --config configs/train_sst2.json
+CUDA_VISIBLE_DEVICES=0 python train.py --config configs/train_sst2.json --output_dir your/output/path
 ```
 
 Available: `train_sst2.json`, `train_civil.json`, `train_multinli.json`. CLI arguments override config values.
