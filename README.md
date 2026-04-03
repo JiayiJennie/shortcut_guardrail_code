@@ -33,6 +33,17 @@ Code for the paper *"Models Know Their Shortcuts: Deployment-Time Shortcut Mitig
 ```bash
 conda create -n shortcut_guardrail python=3.10
 conda activate shortcut_guardrail
+```
+
+Then install **PyTorch** with the CUDA build that matches your driver from the official page:
+
+[https://pytorch.org/get-started/locally/](https://pytorch.org/get-started/locally/)
+
+*Reference (development conda env `nfl`): PyTorch `2.9.1+cu128` (CUDA 12.8). Choose the wheel that matches your GPU driver; this is only an example.*
+
+Finally install the rest of the dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
