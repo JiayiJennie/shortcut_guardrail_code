@@ -39,7 +39,7 @@ Then install **PyTorch** with the CUDA build that matches your driver from the o
 
 [https://pytorch.org/get-started/locally/](https://pytorch.org/get-started/locally/)
 
-*Reference (development conda env `nfl`): PyTorch `2.9.1+cu128` (CUDA 12.8). Choose the wheel that matches your GPU driver; this is only an example.*
+*Reference: PyTorch `2.9.1+cu128` (CUDA 12.8). Choose the wheel that matches your GPU driver; this is only an example.*
 
 Finally install the rest of the dependencies:
 
