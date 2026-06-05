@@ -182,7 +182,7 @@ def run_alpha_calibration(student, teacher, tokenizer, test_sentences, test_labe
     print(f"  => best cal_acc={best_acc:.4f}, tied alpha range=[{alpha_min:.1f}, {alpha_max:.1f}]")
 
     teacher_acc_ref = get_accuracy(test_predictions, test_labels)
-    eval_pairs_list = [(alpha_min, "min"), (alpha_max, "max")] if alpha_min != alpha_max else [(alpha_min, "best")]
+    eval_pairs_list = [(alpha_max, "best")]
     for cal_alpha, label in eval_pairs_list:
         for n, p in student.named_parameters():
             if "lora_" in n:
