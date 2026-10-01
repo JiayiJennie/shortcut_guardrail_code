@@ -1,6 +1,6 @@
 # Shortcut Guardrail
 
-Code for the paper *"Models Know Their Shortcuts: Deployment-Time Shortcut Mitigation"*.
+Code for the paper *"Models Know Their Shortcuts: Deployment-Time Shortcut Mitigation"*, accepted to Findings of AACL-IJCNLP 2026.
 
 ## Overview
 
